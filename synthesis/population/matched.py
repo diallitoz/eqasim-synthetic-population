@@ -6,6 +6,7 @@ import numba
 
 import data.hts.egt.cleaned
 import data.hts.entd.cleaned
+import data.hts.emd.cleaned
 
 import multiprocessing as mp
 
@@ -17,6 +18,7 @@ population sample. This is done by statistical matching.
 INCOME_CLASS = {
     "egt": data.hts.egt.cleaned.calculate_income_class,
     "entd": data.hts.entd.cleaned.calculate_income_class,
+    "emd": data.hts.emd.cleaned.calculate_income_class,
 }
 
 def configure(context):
@@ -173,12 +175,13 @@ def execute(context):
     df_income = context.stage("synthesis.population.income")[["household_id", "household_income"]]
 
     df_target = pd.merge(df_target, df_income)
-    df_target["income_class"] = INCOME_CLASS[hts](df_target)
+    #df_target["income_class"] = INCOME_CLASS[hts](df_target)### Non prise en compte des revenus car ne fesant partis de l'EMD
 
     df_target["any_cars"] = df_target["number_of_vehicles"] > 0
     df_source["any_cars"] = df_source["number_of_vehicles"] > 0
 
-    columns = ["sex", "any_cars", "age_class", "socioprofessional_class", "income_class", "departement_id"]
+    #columns = ["sex", "any_cars", "age_class", "socioprofessional_class", "income_class", "departement_id"]
+    columns = ["sex", "any_cars", "age_class", "socioprofessional_class", "commune_id"]
 
     # Perform statistical matching
     df_source = df_source.rename(columns = { "person_id": "hts_id" })

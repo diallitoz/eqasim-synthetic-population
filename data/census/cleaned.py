@@ -51,6 +51,16 @@ def execute(context):
     # Verify with requested codes
     df_codes = context.stage("data.spatial.codes")
 
+    ##En utilisant les CANTONVILLE, il y a des communes supplementaires qui peuvent s'ajouter à l'extration de celles de la MEL uniquemenent
+    ##Donc, il faut les supprimer par la suite
+    ##Il est possible d'utiliser les IRIS dans les données brutes du RP, mais là aussi des pertes de communes de la MEL
+    ##peuvent intervenir car toutes les communes de la MEL ne sont pas irisées!
+    ###{'59452', 'undefined', '59011', '59586', '59052'} à supprimer de la liste des communes
+
+    communes_horsMEL = {'59452', '59011', '59586',
+                        '59052'}  # =set(df["commune_id"].unique()) - set(df_codes["commune_id"].unique())
+    df = df[~df["commune_id"].isin(communes_horsMEL)]
+
     excess_communes = set(df["commune_id"].unique()) - set(df_codes["commune_id"].unique())
     if not excess_communes == {"undefined"}:
         raise RuntimeError("Found additional communes: %s" % excess_communes)
@@ -105,8 +115,8 @@ def execute(context):
     df["socioprofessional_class"] = df["CS1"].astype(np.int)
 
     # Place of work or education
-    df["work_outside_region"] = df["ILT"].isin(("4", "5", "6"))
-    df["education_outside_region"] = df["ILETUD"].isin(("4", "5", "6"))
+    df["work_outside_region"] = df["ILT"].isin(("3", "4", "5", "6")) #Add "3" for same commune
+    df["education_outside_region"] = df["ILETUD"].isin(("3", "4", "5", "6"))
 
     # Consumption units
     df = pd.merge(df, hts.calculate_consumption_units(df), on = "household_id")

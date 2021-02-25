@@ -4,11 +4,12 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as tck
 
 """
-Comparison of various attributes between EGT, ENTD and census.
+Comparison of various attributes between EMD, ENTD and census.
 """
 
 def configure(context):
-    context.stage("data.hts.egt.filtered")
+    #context.stage("data.hts.egt.filtered")
+    context.stage("data.hts.emd.filtered")
     context.stage("data.hts.entd.filtered")
     context.stage("data.census.filtered")
 

@@ -8,7 +8,7 @@ This stage loads the raw data from the French enterprise registry.
 
 def configure(context):
     context.config("data_path")
-    context.config("sirene_path", "sirene/StockEtablissement_utf8.zip")
+    context.config("sirene_path", "sirene/StockEtablissement_utf8.csv")
 
     context.stage("data.spatial.codes")
 
@@ -24,6 +24,7 @@ def execute(context):
     # Filter by departement
     df_codes = context.stage("data.spatial.codes")
     requested_departements = set(df_codes["departement_id"].unique())
+    #requested_communes = set(df_codes["commune_id"].unique())
 
     f = df_sirene["codeCommuneEtablissement"].isna() # Just to get a mask
 

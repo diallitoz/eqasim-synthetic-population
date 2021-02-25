@@ -76,6 +76,11 @@ def execute(context):
 
     # Check whether all communes in BPE are within our set of requested data
     df_municipalities = context.stage("data.spatial.municipalities")
+
+    requested_communes = df_municipalities["commune_id"]
+    # Get only MEL communes
+    df = df[df["commune_id"].isin(requested_communes)]
+
     excess_communes = set(df["commune_id"].unique()) - set(df_municipalities["commune_id"].unique())
 
     if len(excess_communes) > 0:

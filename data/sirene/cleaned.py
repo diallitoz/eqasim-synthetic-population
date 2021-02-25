@@ -46,6 +46,10 @@ def execute(context):
 
     df_codes = context.stage("data.spatial.codes")
     requested_communes = set(df_codes["commune_id"].unique())
+
+    #Get only MEL communes
+    df_sirene = df_sirene[df_sirene["commune_id"].isin(requested_communes)]
+
     excess_communes = set(df_sirene["commune_id"].unique()) - requested_communes
 
     if len(excess_communes) > 0:

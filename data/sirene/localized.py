@@ -163,6 +163,8 @@ def execute(context):
     df_municipalities = context.stage("data.spatial.municipalities")
 
     del df_valid["commune_id"]
+    print(df_valid)
+    print(df_municipalities)
     df_valid = gpd.sjoin(df_valid, df_municipalities[["geometry", "commune_id"]], op = "within")
     del df_valid["index_right"]
 
