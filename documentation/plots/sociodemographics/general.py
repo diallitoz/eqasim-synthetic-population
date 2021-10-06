@@ -7,7 +7,7 @@ import documentation.plotting as plotting
 import documentation.plots.language as lang
 import analysis.marginals
 
-SAMPLING_RATE = 0.05
+SAMPLING_RATE = 0.2
 
 def configure(context):
     context.config("hts")
@@ -43,12 +43,12 @@ def prepare_reference(hts_marginals, census_marginals, level, marginal):
 def prepare_marginal(data_marginals, hts_marginals, census_marginals, level, marginal, sampling_rate):
     df = data_marginals[level][(marginal,)].copy().rename(columns = { marginal: "value" })
     df["attribute"] = marginal
-    df = df[["attribute", "value", "mean", "min", "max"]]
+    df = df[["attribute", "value", "mean", "q5", "q95"]]
     df = df.sort_values(by = "value")
 
     df["mean"] /= sampling_rate
-    df["min"] /= sampling_rate
-    df["max"] /= sampling_rate
+    df["q5"] /= sampling_rate
+    df["q95"] /= sampling_rate
 
     df = pd.merge(df, prepare_reference(hts_marginals, census_marginals, level, marginal), on = "value")
 
@@ -110,11 +110,11 @@ def execute(context):
 
     figures = [
         dict(
-            level = "person", label = "Number of persons", size = (6.0, 5.0),
+            level = "person", label = "Number of persons [x1000]", size = (6.0, 5.0),
             marginals = ["age_class", "sex", "employed", "studies", "has_license", "has_pt_subscription", "socioprofessional_class"]
         ),
         dict(
-            level = "household", label = "Number of households", size = plotting.WIDE_FIGSIZE,
+            level = "household", label = "Number of households [x1000]", size = plotting.WIDE_FIGSIZE,
             marginals = ["household_size_class", "number_of_vehicles_class", "number_of_bikes_class"]
         )
     ]
@@ -135,23 +135,29 @@ def execute(context):
 
         f = (df_figure["reference_source"] == "hts").values
         hts_name = context.config("hts")
-        plt.barh(locations[f], df_figure["reference"].values[f], height = 0.4, label = "HTS", align = "edge", linewidth = 0.5, edgecolor = "white", color = plotting.COLORS[hts_name])
+        plt.barh(locations[f], df_figure["reference"].values[f], height = 0.4, label = lang.get_source(hts_name), align = "edge", linewidth = 0.5, edgecolor = "white", color = plotting.COLORS[hts_name])
         plt.barh(locations[f] + 0.4, df_figure["mean"].values[f], height = 0.4, label = None, align = "edge", linewidth = 0.5, edgecolor = "white", color = plotting.COLORS["synthetic"])
 
-        for index, (min, max) in enumerate(zip(df_figure["min"].values, df_figure["max"].values)):
+        for index, (q5, q95) in enumerate(zip(df_figure["q5"].values, df_figure["q95"].values)):
             location = index + 0.4 + 0.2
-            plt.plot([min, max], [location, location], "k", linewidth = 1, label = "Range")
+            plt.plot([q5, q95], [location, location], "k", linewidth = 1, label = "90% Conf.")
 
         plt.gca().yaxis.set_major_locator(tck.FixedLocator(locations + 0.4))
         plt.gca().yaxis.set_major_formatter(tck.FixedFormatter(df_figure["label"].values))
 
         if figure["level"] == "person":
-            plt.gca().xaxis.set_major_locator(tck.FixedLocator(np.arange(1, 100) * 1e6 * 2))
-            plt.gca().xaxis.set_major_formatter(tck.FuncFormatter(lambda x,p: "%dM" % (x / 1e6,)))
+            #plt.gca().xaxis.set_major_locator(tck.FixedLocator(np.arange(1, 100) * 1e6 * 2))
+            #plt.gca().xaxis.set_major_formatter(tck.FuncFormatter(lambda x,p: "%dM" % (x / 1e6,)))
+            plt.gca().xaxis.set_major_locator(tck.FixedLocator(np.arange(1, 100) * 1e5))
+            plt.gca().xaxis.set_major_formatter(tck.FuncFormatter(lambda x, p: "%d" % (x / 1e3,)))
+            #xport_csv_person = df_figure.to_csv(r'./data/df_figurePersons.csv', index=None, header=True)
 
         if figure["level"] == "household":
-            plt.gca().xaxis.set_major_locator(tck.FixedLocator(np.arange(1, 100) * 1e6 * 0.5))
-            plt.gca().xaxis.set_major_formatter(tck.FuncFormatter(lambda x,p: "%.1fM" % (x / 1e6,)))
+            #plt.gca().xaxis.set_major_locator(tck.FixedLocator(np.arange(1, 100) * 1e6 * 0.5))
+            #plt.gca().xaxis.set_major_formatter(tck.FuncFormatter(lambda x,p: "%.1fM" % (x / 1e6,)))
+            plt.gca().xaxis.set_major_locator(tck.FixedLocator(np.arange(1, 100) * 1e5))
+            plt.gca().xaxis.set_major_formatter(tck.FuncFormatter(lambda x, p: "%.1d" % (x / 1e3,)))
+            #xport_csv_household = df_figure.to_csv(r'./data/df_figureHousehold.csv', index=None, header=True)
 
         plt.grid()
         plt.gca().set_axisbelow(True)

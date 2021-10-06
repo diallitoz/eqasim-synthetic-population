@@ -28,6 +28,7 @@ def execute(context):
     ).head(CHAIN_TOP_K)["chain"].values
     df_chains = df_chains[df_chains["chain"].isin(top_k_chains)]
 
-    df_chains["age_range"] = (df_chains["age"] >= 18) & (df_chains["age"] <= 40)
+    #df_chains["age_range"] = (df_chains["age"] >= 18) & (df_chains["age"] <= 40)
+    df_chains["age_range"] = (df_chains["age"] >= 15) & (df_chains["age"] <= 64)#population en âge de travailler dans la population totale.
 
     return stats.marginalize(df_chains, CHAIN_MARGINALS, weight_column = "person_weight")

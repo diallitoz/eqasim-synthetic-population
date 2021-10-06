@@ -7,7 +7,15 @@ working_directory: /home/dialloaziseoumar/AziseThesis/GenerationPopulationSynthe
 # This section defines which parts of the pipeline should be run
 run:
   - synthesis.output # To create the output population in the output_path (see below)
-  - matsim.output # Uncomment, if you want to run the full simulation (you'll need Java for that)
+  - documentation.paper # To copy plots and tables
+  #- documentation.plots.data.hts_comparison
+  #- documentation.plots.sampling.error_probability
+  #- documentation.plots.sampling.sample_count
+  #- documentation.plots.sociodemographics.general
+  #- documentation.plots.sociodemographics.local
+  #- documentation.plots.sociodemographics.chains
+  #- documentation.plots.matching
+  #- matsim.output # Uncomment, if you want to run the full simulation (you'll need Java for that)
 
 # Here the configuraiton of the pipeline starts
 config:
@@ -18,12 +26,14 @@ config:
   hts: emd
 
   # Define sampling rate and random seed for the output population
-  sampling_rate: 1
+  sampling_rate: 0.2
   random_seed: 1234
+  acquisition_sample_size: 200
 
   # Paths to the input data and where the output should be stored
   data_path: /home/dialloaziseoumar/AziseThesis/GenerationPopulationSynthetique/mel/data
-  output_path: /home/dialloaziseoumar/AziseThesis/GenerationPopulationSynthetique/lille_metropolis/output
+  output_path: /home/dialloaziseoumar/AziseThesis/GenerationPopulationSynthetique/lille_metropolis/output_20p_10-05-21
+  paper_path: /home/dialloaziseoumar/AziseThesis/GenerationPopulationSynthetique/lille_metropolis/output_20p_10-05-21/paper
 
   # Only interesting if you run the simulation
   java_memory: 14G

@@ -48,14 +48,14 @@ def execute(context):
     f = df_reference["source"] == "entd"
     plt.plot(df_reference[f]["income"].values * 1e-3, df_reference[f]["cdf"].values, color = plotting.COLORS["entd"], label = "ENTD", linewidth = 1.0)
 
-    f = df_reference["source"] == "egt"
-    plt.plot(df_reference[f]["income"].values * 1e-3, df_reference[f]["cdf"].values, color = plotting.COLORS["egt"], label = "EGT", linewidth = 1.0)
+    ##f = df_reference["source"] == "egt"
+    ###plt.plot(df_reference[f]["income"].values * 1e-3, df_reference[f]["cdf"].values, color = plotting.COLORS["egt"], label = "EGT", linewidth = 1.0)
 
     f = df_reference["source"] == "filo"
     plt.plot(df_reference[f]["income"].values * 1e-3, df_reference[f]["cdf"].values, color = plotting.COLORS["census"], label = "Tax data", linewidth = 1.0, marker = ".", markersize = 3)
 
     plt.plot(df_data["mean"].values * 1e-3, df_data["cdf"].values, color = "k", label = "Synthetic", linewidth = 1.0, linestyle = ":")
-    plt.fill_betweenx(df_data["cdf"].values, df_data["min"].values * 1e-3, df_data["max"].values * 1e-3, color = "k", linewidth = 0.0, alpha = 0.25)
+    plt.fill_betweenx(df_data["cdf"].values, df_data["q5"].values * 1e-3, df_data["q95"].values * 1e-3, color = "k", linewidth = 0.0, alpha = 0.25)
 
     plt.xlim([0, 60])
 

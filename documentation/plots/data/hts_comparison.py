@@ -18,12 +18,17 @@ def execute(context):
     df_distance = hts_comparison["distance_distribution"]
 
     f_entd = df_distance["hts"] == "entd"
-    f_egt = df_distance["hts"] == "egt"
+    #f_egt = df_distance["hts"] == "egt"
+    f_emd = df_distance["hts"] == "emd"
 
-    plt.figure()
+    #plt.figure()
+    plt.figure(figsize=(6, 4))
 
     plt.bar(df_distance[f_entd]["distance_class"].values, df_distance[f_entd]["trip_weight"].values / 1e6, width = 0.4, label = "ENTD (Routed)", align = "edge", color = plotting.COLORS["entd"], linewidth = 0.5, edgecolor = "white")
-    plt.bar(df_distance[f_egt]["distance_class"].values + 0.4, df_distance[f_egt]["trip_weight"].values / 1e6, width = 0.4, label = "EGT (Euclidean)", align = "edge", color = plotting.COLORS["egt"], linewidth = 0.5, edgecolor = "white")
+    #plt.bar(df_distance[f_egt]["distance_class"].values + 0.4, df_distance[f_egt]["trip_weight"].values / 1e6, width = 0.4, label = "EGT (Euclidean)", align = "edge", color = plotting.COLORS["egt"], linewidth = 0.5, edgecolor = "white")
+    plt.bar(df_distance[f_emd]["distance_class"].values + 0.4, df_distance[f_emd]["trip_weight"].values / 1e6,
+            width=0.4, label="EMD (Routed)", align="edge", color=plotting.COLORS["emd"], linewidth=0.5,
+            edgecolor="white")
 
     plt.gca().xaxis.set_major_locator(tck.FixedLocator(np.arange(0, 10, 2) + 0.4))
     plt.gca().xaxis.set_major_formatter(tck.FixedFormatter(["<%dkm" % d for d in np.arange(1, 10, 2)]))
@@ -50,14 +55,18 @@ def execute(context):
     df_age = hts_comparison["age_distribution"]
 
     f_entd = df_age["hts"] == "entd"
-    f_egt = df_age["hts"] == "egt"
+    #f_egt = df_age["hts"] == "egt"
+    f_emd = df_age["hts"] == "emd"
     f_census = df_age["hts"] == "census"
 
-    plt.figure()
+    #plt.figure()
+    plt.figure(figsize=(6, 4))
 
     plt.bar(df_age[f_census]["age_class"].values, df_age[f_census]["person_weight"].values / 1e6, width = 0.25, label = "Census", align = "edge", color = plotting.COLORS["census"], linewidth = 0.5, edgecolor = "white")
     plt.bar(df_age[f_entd]["age_class"].values + 0.25, df_age[f_entd]["person_weight"].values / 1e6, width = 0.25, label = "ENTD", align = "edge", color = plotting.COLORS["entd"], linewidth = 0.5, edgecolor = "white")
-    plt.bar(df_age[f_egt]["age_class"].values + 0.5, df_age[f_egt]["person_weight"].values / 1e6, width = 0.25, label = "EGT", align = "edge", color = plotting.COLORS["egt"], linewidth = 0.5, edgecolor = "white")
+    #plt.bar(df_age[f_egt]["age_class"].values + 0.5, df_age[f_egt]["person_weight"].values / 1e6, width = 0.25, label = "EGT", align = "edge", color = plotting.COLORS["egt"], linewidth = 0.5, edgecolor = "white")
+    plt.bar(df_age[f_emd]["age_class"].values + 0.5, df_age[f_emd]["person_weight"].values / 1e6, width=0.25,
+            label="EMD", align="edge", color=plotting.COLORS["emd"], linewidth=0.5, edgecolor="white")
 
     plt.gca().xaxis.set_major_locator(tck.FixedLocator(np.arange(1000) + 0.75 / 2))
     plt.gca().xaxis.set_major_formatter(tck.FixedFormatter(["%d0s" % d for d in np.arange(1, 10, 2)]))

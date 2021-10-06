@@ -11,7 +11,6 @@ def configure(context):
     context.stage("analysis.reference.hts.commute_distance", alias = "hts")
     context.stage("analysis.synthesis.commute_distance", dict(sampling_rate = SAMPLING_RATE), alias = "data")
     context.stage("analysis.reference.od.commute_distance", alias = "census")
-    context.config("hts")
 
 def execute(context):
     plotting.setup()
@@ -19,7 +18,6 @@ def execute(context):
     hts_data = context.stage("hts")
     data = context.stage("data")
     census_data = context.stage("census")
-    hts_name = context.config("hts")
 
     plt.figure(figsize = plotting.SHORT_FIGSIZE)
 
@@ -34,14 +32,14 @@ def execute(context):
         #plt.plot(census_data[slot]["centroid_distance"] * 1e-3, census_data[slot]["cdf"], color = plotting.COLORS["census"], linestyle = part["linestyle"], linewidth = 1.0)
 
         plt.plot(data[slot]["mean"], data[slot]["cdf"], color = "k", linestyle = part["linestyle"], linewidth = 1.0)
-        plt.fill_betweenx(data[slot]["cdf"], data[slot]["min"], data[slot]["max"], color = "k", linewidth = 0.0, alpha = 0.25)
+        plt.fill_betweenx(data[slot]["cdf"], data[slot]["q5"], data[slot]["q95"], color = "k", linewidth = 0.0, alpha = 0.25)
 
-        plt.plot(hts_data[slot]["euclidean_distance"] * 1e-3, hts_data[slot]["cdf"], color = plotting.COLORS[hts_name], linestyle = part["linestyle"], linewidth = 1.0)
+        plt.plot(hts_data[slot]["euclidean_distance"] * 1e-3, hts_data[slot]["cdf"], color = plotting.COLORS["emd"], linestyle = part["linestyle"], linewidth = 1.0)
 
         plt.plot([np.nan], color = "k", linewidth = 1.0, linestyle = part["linestyle"], label = part["title"])
 
     plt.plot([np.nan], color = "k", linewidth = 1.0, label = "Synthetic")
-    plt.plot([np.nan], color = plotting.COLORS[hts_name], linewidth = 1.0, label = "HTS")
+    plt.plot([np.nan], color = plotting.COLORS["emd"], linewidth = 1.0, label = "EMD")
 
     plt.xlim([0, 40])
     plt.ylim([0, 1])

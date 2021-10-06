@@ -15,7 +15,7 @@ COLORSET5 =  palettable.colorbrewer.qualitative.Set2_5.mpl_colors
 COLORS = {
     "census": COLORSET[2],
     "entd": COLORSET[0],
-    "egt": COLORSET[1],
+    "emd": COLORSET[1],
     "synthetic": "#cccccc", #COLORSET[3]
 }
 
